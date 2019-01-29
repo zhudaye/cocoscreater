@@ -2,7 +2,7 @@
  * @Date: 2019-01-02 18:56:23
  * @Author: zhudaye
  * @LastEditors: zhudaye
- * @LastEditTime: 2019-01-02 22:40:43
+ * @LastEditTime: 2019-01-12 16:27:47
  */
 
 /**
@@ -13,13 +13,16 @@
  * } 
  * @return: void
  */
+const {
+    getSprite
+} = require('../globalStorage');
+
 module.exports = function (nodeList, changeList) {
-    nodeList.map(ele => {
+    nodeList.forEach(ele => {
         if (changeList[ele.beedType]) {
-            ele.beedType = changeList[ele.beedType]
-            cc.loader.loadRes(`images/beeds/${ele.beedType}`, cc.SpriteFrame, function (err, spriteFrame) {
-                ele.getComponent(cc.Sprite).spriteFrame = spriteFrame;
-            });
+            ele.beedType = changeList[ele.beedType];
+            ele.strengthen = false;
+            ele.getComponent(cc.Sprite).spriteFrame = getSprite(ele.beedType).sprite;
         }
     })
 }

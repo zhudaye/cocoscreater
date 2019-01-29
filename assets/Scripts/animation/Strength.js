@@ -10,6 +10,7 @@
 
 cc.Class({
     extends: cc.Component,
+
     properties: {
         // foo: {
         //     // ATTRIBUTES:
@@ -26,32 +27,17 @@ cc.Class({
         //         this._bar = value;
         //     }
         // },
-        Strength: {
-            default: null,
-            type: cc.Node
-        }
     },
 
     // LIFE-CYCLE CALLBACKS:
 
-    onLoad () {
-        this.addEvent()
-    },
-
-    // 绑定事件
-    addEvent: function () {
-        this.node.on('touchstart', function (event) {
-        }, this)
-    },
+    // onLoad () {},
 
     start () {
+        let anim = this.getComponent(cc.Animation);
+        let animState = anim.play('strength');
+        animState.speed = 0.12;
     },
-
-    update (dt) {
-        if (this.node.strengthen) {
-            this.Strength.active = true;
-        } else {
-            this.Strength.active = false;
-        }
-    },
+          
+    // update (dt) {},
 });

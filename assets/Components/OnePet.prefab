@@ -28,10 +28,14 @@
       }
     ],
     "_active": true,
-    "_level": 5,
-    "_components": [],
+    "_level": 1,
+    "_components": [
+      {
+        "__id__": 11
+      }
+    ],
     "_prefab": {
-      "__id__": 11
+      "__id__": 12
     },
     "_opacity": 255,
     "_color": {
@@ -152,7 +156,7 @@
     "_spriteFrame": {
       "__uuid__": "a391cd0f-fd6a-4179-a4b8-2893039c264a"
     },
-    "_type": 0,
+    "_type": 3,
     "_sizeMode": 1,
     "_fillType": 0,
     "_fillCenter": {
@@ -161,7 +165,7 @@
       "y": 0
     },
     "_fillStart": 0,
-    "_fillRange": 0,
+    "_fillRange": 1,
     "_isTrimmedMode": true,
     "_state": 0,
     "_atlas": null,
@@ -173,7 +177,7 @@
       "__id__": 1
     },
     "asset": {
-      "__id__": 0
+      "__uuid__": "c24d2356-d7d8-4b53-b2fc-c5a0bdc1cbed"
     },
     "fileId": "f1ilFxLjZHUKbwrl53CdSI",
     "sync": false
@@ -274,14 +278,14 @@
       "__id__": 1
     },
     "asset": {
-      "__id__": 0
+      "__uuid__": "c24d2356-d7d8-4b53-b2fc-c5a0bdc1cbed"
     },
     "fileId": "cbCDYcHwVPHI0UGx3OTa7V",
     "sync": false
   },
   {
     "__type__": "cc.Node",
-    "_name": "New Label",
+    "_name": "Label",
     "_objFlags": 0,
     "_parent": {
       "__id__": 1
@@ -300,9 +304,9 @@
     "_opacity": 255,
     "_color": {
       "__type__": "cc.Color",
-      "r": 22,
-      "g": 42,
-      "b": 244,
+      "r": 229,
+      "g": 70,
+      "b": 129,
       "a": 255
     },
     "_contentSize": {
@@ -354,8 +358,8 @@
     "_srcBlendFactor": 1,
     "_dstBlendFactor": 771,
     "_useOriginalSize": false,
-    "_string": "1000000",
-    "_N$string": "1000000",
+    "_string": "2222222",
+    "_N$string": "2222222",
     "_fontSize": 24,
     "_lineHeight": 24,
     "_enableWrapText": true,
@@ -374,10 +378,29 @@
       "__id__": 1
     },
     "asset": {
-      "__id__": 0
+      "__uuid__": "c24d2356-d7d8-4b53-b2fc-c5a0bdc1cbed"
     },
     "fileId": "d8PetS8fVEKKorOYJYUGez",
     "sync": false
+  },
+  {
+    "__type__": "826099mTqBGoLy9/BO2ROEW",
+    "_name": "",
+    "_objFlags": 0,
+    "node": {
+      "__id__": 1
+    },
+    "_enabled": true,
+    "Pet": {
+      "__id__": 2
+    },
+    "Label": {
+      "__id__": 8
+    },
+    "Frame": {
+      "__id__": 5
+    },
+    "_id": ""
   },
   {
     "__type__": "cc.PrefabInfo",
@@ -385,7 +408,7 @@
       "__id__": 1
     },
     "asset": {
-      "__id__": 0
+      "__uuid__": "c24d2356-d7d8-4b53-b2fc-c5a0bdc1cbed"
     },
     "fileId": "18H1rsssdEtJu3RLey60Ih",
     "sync": false

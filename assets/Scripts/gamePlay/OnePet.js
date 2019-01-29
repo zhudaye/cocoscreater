@@ -10,6 +10,7 @@
 
 cc.Class({
     extends: cc.Component,
+
     properties: {
         // foo: {
         //     // ATTRIBUTES:
@@ -25,33 +26,30 @@ cc.Class({
         //     set (value) {
         //         this._bar = value;
         //     }
-        // },
-        Strength: {
+        // }
+        Pet: {
+            default: null,
+            type: cc.Node
+        },
+        Label: {
+            default: null,
+            type: cc.Node
+        },
+        Frame: {
             default: null,
             type: cc.Node
         }
     },
 
     // LIFE-CYCLE CALLBACKS:
-
-    onLoad () {
-        this.addEvent()
-    },
-
-    // 绑定事件
-    addEvent: function () {
-        this.node.on('touchstart', function (event) {
-        }, this)
-    },
-
     start () {
+        this.Label.getComponent(cc.Label).string = '';
+        this.Label.color = this.node.labelColor;
+        this.Frame.getComponent(cc.Sprite).spriteFrame = this.node.frame;
+        this.Pet.getComponent(cc.Sprite).spriteFrame = this.node.pet;
     },
 
     update (dt) {
-        if (this.node.strengthen) {
-            this.Strength.active = true;
-        } else {
-            this.Strength.active = false;
-        }
+        this.Label.getComponent(cc.Label).string = this.node.attackData.hurt || '';
     },
 });

@@ -9,7 +9,6 @@
 //  - [English] http://www.cocos2d-x.org/docs/creator/en/scripting/life-cycle-callbacks.html
 let activeNode = null, // 当前正在移动的节点
     lockMove = false, // 是否正在移动转珠
-    inComputed = false, // 正在计算伤害
     paused = false, // 暂停
     anchorOffsetX = 52, // 锚点偏移
     anchorOffsetY = 52, // 锚点偏移
@@ -20,14 +19,24 @@ let activeNode = null, // 当前正在移动的节点
     xNumber = 6, // x方向转珠数
     yNumber = 5; // y 方向转珠数
 
-let {
+const {
     createBeed
-} = require('../util')
+} = require('../util');
+
+const {
+   getSprite
+} = require('../globalStorage')
+
+const {
+    data,
+    computedHurt,
+    setComputedStatus,
+} = require('gameData')
 
 cc.Class({
     extends: cc.Component,
     properties: {
-        target: {
+        Beed: {
             default: null,
             type: cc.Prefab,
         },
@@ -49,14 +58,12 @@ cc.Class({
     },
 
     // LIFE-CYCLE CALLBACKS:
-    onLoad() {
+    start() {
         let data = this.createBeedLists();
         for (let i = 0; i < data.length; i++) {
             for (let j = 0; j < data[i].length; j++) {
-                let newNode = cc.instantiate(this.target);
-                cc.loader.loadRes(`images/beeds/${data[i][j].type}`, cc.SpriteFrame, function (err, spriteFrame) {
-                    newNode.getComponent(cc.Sprite).spriteFrame = spriteFrame;
-                });
+                let newNode = cc.instantiate(this.Beed);
+                newNode.getComponent(cc.Sprite).spriteFrame = getSprite(data[i][j].type).sprite;
                 newNode.beedType = data[i][j].type;
                 newNode.idX = i;
                 newNode.idY = j;
@@ -67,6 +74,7 @@ cc.Class({
                 newNode.setPosition(cc.v2(anchorOffsetX + width * i, anchorOffsetY + height * j));
             }
         }
+        this.node.zIndex = 10;
         this.addEvent()
     },
 
@@ -114,13 +122,13 @@ cc.Class({
     // 绑定事件
     addEvent: function () {
         this.node.on('touchstart', function (event) {
-            if (lockMove || inComputed || paused) {
+            if (lockMove || data.computing || paused) {
                 return
             }
 
-            if (event.target.name === 'beed') {
+            if (event.target.name === 'Beed') {
                 activeNode = event.target
-                activeNode.zIndex = 1;
+                activeNode.zIndex = 3;
                 activeNode.runAction(cc.scaleTo(0.2, 0.8));
                 lockMove = true
             }
@@ -130,7 +138,7 @@ cc.Class({
             let x = event.getLocationX(),
             y = event.getLocationY();
 
-            if (paused || inComputed) {
+            if (paused || data.computing) {
                 return
             }
 
@@ -152,7 +160,7 @@ cc.Class({
                     activeNode.idX = toX;
                     activeNode.idY = toY;
                     activeNode.stopAllActions();
-                    activeNode.runAction(cc.moveTo(0.1, cc.v2(anchorOffsetX + width * activeNode.idX, anchorOffsetY + height * activeNode.idY)));
+                    activeNode.runAction(cc.moveTo(0.05, cc.v2(anchorOffsetX + width * activeNode.idX, anchorOffsetY + height * activeNode.idY)));
                     changeNode.stopAllActions();
                     changeNode.runAction(this.beedChange(anchorOffsetX + width * changeNode.idX, anchorOffsetY + height * changeNode.idY));
                     changeNode = null;
@@ -161,14 +169,14 @@ cc.Class({
         }, this)
 
         this.node.on('touchcancel', function (event) {
-            if (paused || inComputed) {
+            if (paused || data.computing) {
                 return
             }
             this.endMove()
         }, this)
 
         this.node.on('touchend', function (event) {
-            if (paused || inComputed) {
+            if (paused || data.computing) {
                 return
             }
             this.endMove()
@@ -187,10 +195,11 @@ cc.Class({
     // 触摸结束
     endMove() {
         lockMove = false;
-        inComputed = true;
+        setComputedStatus(true);
         ;activeNode && activeNode.runAction(cc.sequence(cc.scaleTo(0.2, 1), cc.callFunc(function (target) {
             activeNode.zIndex = 2;
             activeNode = null;
+            setComputedStatus
             this.computedComb();
         }, this)));
     },
@@ -292,11 +301,9 @@ cc.Class({
 
             let needCount = yNumber - newArr.length; // 还需要生成的转珠数
             while (newArr.length < yNumber) {
-                let newNode = cc.instantiate(this.target),
+                let newNode = cc.instantiate(this.Beed),
                 newType = createBeed();
-                cc.loader.loadRes(`images/beeds/${newType}`, cc.SpriteFrame, function (err, spriteFrame) {
-                    newNode.getComponent(cc.Sprite).spriteFrame = spriteFrame;
-                });
+                newNode.getComponent(cc.Sprite).spriteFrame = getSprite(newType).sprite;
                 newNode.beedType = newType;
                 newNode.idX = i;
                 newNode.idY = newArr.length;
@@ -312,7 +319,7 @@ cc.Class({
                 if ((index + 1) === newArr.length && (i + 1) === beedLists.length) {
                     ele.runAction(cc.sequence(this.createMove(anchorOffsetX + width * ele.idX, anchorOffsetY + height * ele.idY), this.finishOnce({
                         beeds: filterRemoveBeeds,
-                        comb: combCount
+                        combs: combCount
                     })))
                 } else {
                     ele.runAction(this.createMove(anchorOffsetX + width * ele.idX, anchorOffsetY + height * ele.idY))
@@ -325,16 +332,15 @@ cc.Class({
 
     // 完成一次所有计算后
     computedCombEnd: function() {
-        console.log(this.node.children);
         setTimeout(() => {
-           inComputed = false
+           setComputedStatus(false)
         }, 300)
     },
 
     // 一次计算完成
-    finishOnce: function (target, data) {
-        return cc.callFunc(function (data) {
-            console.log(data)
+    finishOnce: function (data) {
+        return cc.callFunc((target, data) => {
+            computedHurt(data)           
             setTimeout(() => {
                 this.computedComb()
             }, 200)
@@ -348,10 +354,6 @@ cc.Class({
 
     updated() {
         
-    },
-
-    start() {
-
     },
 
     // update (dt) {},

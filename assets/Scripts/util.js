@@ -1,5 +1,5 @@
 let {
-  beedTypeLists
+  globInfo
 } = require('globConfig');
 
 /**
@@ -11,9 +11,9 @@ let {
  * @return: string 生成的转珠类型
  */
 const createBeed = function (filterBeedX = undefined, filterBeedY = undefined) {
-    let beedArray = beedTypeLists.filter(ele => ((ele !== filterBeedX) && (ele !== filterBeedY)));
+    let beedArray = globInfo.beedTypeLists.filter(ele => ((ele.type !== filterBeedX) && (ele.type !== filterBeedY)));
     let random = Math.random();
-    return beedArray[Math.ceil(random ? random * beedArray.length : 1) - 1] // 种子
+    return beedArray[Math.ceil(random ? random * beedArray.length : 1) - 1].type // 种子
 }
 
 module.exports = {

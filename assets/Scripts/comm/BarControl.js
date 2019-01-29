@@ -32,6 +32,9 @@ cc.Class({
     // LIFE-CYCLE CALLBACKS:
 
     // onLoad () {},
+    changeBar: function (range) {
+      console.log(range)
+    },
 
     start () {
 
